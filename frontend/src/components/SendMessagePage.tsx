@@ -1,10 +1,22 @@
 import { Button, Input } from "antd"
 import TextArea from "antd/es/input/TextArea"
 import { Controller, useForm } from "react-hook-form"
+import z from "zod"
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const schema = z.object({
+  name: z.string()
+    .trim()
+    .min(2, 'Name must have min 2 letter'),
+  phone: z.string(),
+  message: z.string()
+})
+
+type FormModel = z.infer<typeof schema>
 
 export const SendMessagePage = () => {
-  const {control, handleSubmit, reset} = useForm({mode: "onChange"})
-  const onSubmit = (data) => {
+  const {control, handleSubmit, reset} = useForm<FormModel>({mode: "onChange", resolver: zodResolver(schema)})
+  const onSubmit = (data: FormModel) => {
     console.log(data)
     reset()
   }
